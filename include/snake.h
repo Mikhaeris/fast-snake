@@ -8,27 +8,31 @@
 #include "./point.h"
 
 #define SNAKE_SYMBOL '#'
-
-typedef struct direction {
-    int x;
-    int y;
-} direction;
-
-enum { def_buf_size = 10 };
+#define SNAKE_HEAD_SYMBOL '@'
 
 typedef struct snake {
+    struct {
+        int dx;
+        int dy;
+    };
+    size_t length;
     size_t head;
     size_t tail;
     point *buf;
+    size_t buf_size;
     uint8_t *collision_mask;
+    struct {
+        int row;
+        int col;
+    };
 } snake;
 
 snake *snake_init(screen *scr, point *p);
 
-void snake_update(snake *s, int new_row, int new_col);
+void snake_resize(snake *s, screen *old_scr, screen *new_scr);
 
-void snake_move(snake *s, direction *dr);
+void snake_move(snake *s, screen *scr, int flag);
 
-void set_direction(direction *dr, int dx, int dy);
+void set_direction(snake *s, int dx, int dy);
 
 #endif /* SNAKE_H_SENTRY */

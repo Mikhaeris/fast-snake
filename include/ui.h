@@ -8,6 +8,10 @@ typedef struct screen {
     int col;
 } screen;
 
+void init_ncurses(screen *scr);
+
+void handle_resize(screen scr);
+
 void print_cell(point *p, char);
 
 void clear_cell(point *p);
