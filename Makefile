@@ -1,7 +1,7 @@
 CC      := clang
 CFLAGS  := -Iinclude -Wall -Wextra -std=c11
 LDFLAGS :=
-LIBS    :=
+LIBS    := -lcurses
 
 MODE ?= debug
 SANITIZE ?= 0
