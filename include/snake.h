@@ -18,8 +18,8 @@ typedef struct snake {
     };
     size_t head;
     size_t tail;
-    point *buf;
-    size_t buf_size;
+    point *circle_buf;
+    size_t circle_buf_size;
     uint8_t *collision_mask;
 } snake;
 

@@ -1,8 +1,10 @@
 #include "./include/constants.h"
 #include "./include/ui.h"
 #include "./include/snake.h"
+#include "./include/apple.h"
 
 #include <curses.h>
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -16,6 +18,8 @@ int main()
 
     snake *s = snake_init(&scr);
     set_direction(s, 0, 0);
+
+    apple *a = apple_init(s, &scr);
 
     int key;
     while ((key = getch()) != key_escape) {
@@ -32,9 +36,6 @@ int main()
         case KEY_RIGHT:
             set_direction(s, 1, 0);
             break;
-        case ' ':
-            snake_grow_up(s);
-            break;
         case ERR:
             snake_move(s, &scr);
             break;
@@ -43,6 +44,11 @@ int main()
             handle_resize(&scr);
             snake_update(s, &old_scr, &scr);
             break;
+        }
+
+        if (check_apple_collision(a, s)) {
+            snake_grow_up(s);
+            apple_generate(a, s, &scr);
         }
     }
 
