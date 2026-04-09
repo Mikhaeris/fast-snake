@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum { def_buf_size = 10 };
-
 snake *snake_init(screen *scr, point *p)
 {
     snake *s = malloc(sizeof(*s));
@@ -18,7 +16,7 @@ snake *snake_init(screen *scr, point *p)
 
     s->head = 0;
     s->tail = 0;
-    s->buf_size = def_buf_size;
+    s->buf_size = scr->row * scr->col;
     s->buf = malloc(sizeof(*s->buf) * s->buf_size);
     if (s->buf == NULL) {
         core_error("Bad alloc!");
@@ -36,28 +34,21 @@ snake *snake_init(screen *scr, point *p)
     return s;
 }
 
-void snake_resize(snake *s, screen *old_scr, screen *new_scr)
+static void snake_collision_realloc(snake *s, screen *old_scr, screen *new_scr)
 {
     size_t new_size = new_scr->row * new_scr->col;
 
     uint8_t *raw = calloc(new_size, sizeof(*s->collision_mask));
     char (*new_matrix)[new_scr->col] = (char (*)[new_scr->col])raw;
 
-    char (*old_matrix)[s->col] = (char (*)[s->col])s->buf;
+    char (*old_matrix)[s->col] = (char (*)[s->col])s->collision_mask;
     for (size_t i = 0; i < old_scr->row; i++) {
         for (size_t j = 0; j < old_scr->col; j++) {
             new_matrix[i][j] = old_matrix[i][j];
         }
     }
-}
-
-static void check(int *coord, int max)
-{
-    if (*coord < 0) {
-        *coord += max;
-    } else if (*coord > max) {
-        *coord -= max;
-    }
+    free(s->collision_mask);
+    s->collision_mask = raw;
 }
 
 static void snake_buf_realloc(snake *s)
@@ -85,21 +76,40 @@ static void snake_buf_realloc(snake *s)
     }
 }
 
+void snake_update(snake *s, screen *old_scr, screen *new_scr)
+{
+    snake_collision_realloc(s, old_scr, new_scr);
+    snake_buf_realloc(s);
+}
+
+static uint8_t snake_check_collision(snake *s)
+{
+    char (*collision_matrix)[s->col] = (char (*)[s->col])s->collision_mask;
+    return collision_matrix[s->buf[s->head].x][s->buf[s->head].y] == 1;
+}
+
+static void check(int *coord, int max)
+{
+    if (*coord < 0) {
+        *coord += max;
+    } else if (*coord > max) {
+        *coord -= max;
+    }
+}
+
 void snake_move(snake *s, screen *scr, int flag)
 {
-    /* mode tail */
+    char (*collision_matrix)[s->col] = (char (*)[s->col])s->collision_mask;
+
+    /* set head cell from @ to # */
+    print_cell(&s->buf[s->head], SNAKE_SYMBOL);
+
+    /* move tail */
     if (flag == 0) {
         clear_cell(&s->buf[s->tail]);
+        collision_matrix[s->buf[s->tail].x][s->buf[s->tail].y] = 0;
         s->tail = (s->tail + 1) % s->buf_size;
-    } else {
-        s->length += 1;
-        if (s->length >= s->buf_size) {
-            snake_buf_realloc(s);
-        }
     }
-
-    /* set head cell from @  to # */
-    print_cell(&s->buf[s->head], SNAKE_SYMBOL);
 
     /* move head */
     point new_p = s->buf[s->head];
@@ -110,6 +120,12 @@ void snake_move(snake *s, screen *scr, int flag)
 
     s->head = (s->head + 1) % s->buf_size;
     s->buf[s->head] = new_p;
+
+    if (collision_matrix[s->buf[s->head].x][s->buf[s->head].y] == 1) {
+        game_over(scr);
+    }
+
+    collision_matrix[s->buf[s->head].x][s->buf[s->head].y] = 1;
 
     print_cell(&s->buf[s->head], SNAKE_HEAD_SYMBOL);
 

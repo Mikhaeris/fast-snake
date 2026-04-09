@@ -1,21 +1,25 @@
-#include <curses.h>
-
+#include "./include/constants.h"
 #include "./include/ui.h"
 #include "./include/snake.h"
-#include "./include/constants.h"
+
+#include <curses.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main()
 {
+    srand(time(NULL));
+
     screen scr;
     screen old_scr;
-    init_ncurses(&scr);
+    ncurses_init(&scr);
 
     point p = {
         .x = scr.col/2,
         .y = scr.row/2
     };
     snake *s = snake_init(&scr, &p);
-    set_direction(s, 1, 0);
+    set_direction(s, 0, 0);
 
     int flag_grow_up = 0;
     int key;
@@ -42,12 +46,12 @@ int main()
             break;
         case KEY_RESIZE:
             old_scr = scr;
-            handle_resize(scr);
-            snake_resize(s, &old_scr, &scr);
+            handle_resize(&scr);
+            snake_update(s, &old_scr, &scr);
             break;
         }
     }
 
-    endwin();
+    ncurses_free();
     return 0;
 }

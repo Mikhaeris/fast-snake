@@ -15,7 +15,6 @@ typedef struct snake {
         int dx;
         int dy;
     };
-    size_t length;
     size_t head;
     size_t tail;
     point *buf;
@@ -29,7 +28,7 @@ typedef struct snake {
 
 snake *snake_init(screen *scr, point *p);
 
-void snake_resize(snake *s, screen *old_scr, screen *new_scr);
+void snake_update(snake *s, screen *old_scr, screen *new_scr);
 
 void snake_move(snake *s, screen *scr, int flag);
 
