@@ -11,6 +11,7 @@
 #define SNAKE_HEAD_SYMBOL '@'
 
 typedef struct snake {
+    uint8_t grow_up;
     struct {
         int dx;
         int dy;
@@ -20,17 +21,15 @@ typedef struct snake {
     point *buf;
     size_t buf_size;
     uint8_t *collision_mask;
-    struct {
-        int row;
-        int col;
-    };
 } snake;
 
-snake *snake_init(screen *scr, point *p);
+snake *snake_init(screen *scr);
 
 void snake_update(snake *s, screen *old_scr, screen *new_scr);
 
-void snake_move(snake *s, screen *scr, int flag);
+void snake_grow_up(snake *s);
+
+void snake_move(snake *s, const screen *scr);
 
 void set_direction(snake *s, int dx, int dy);
 

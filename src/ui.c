@@ -43,7 +43,7 @@ void clear_cell(point *p)
     refresh();
 }
 
-void game_over(screen *scr)
+void game_over(const screen *scr)
 {
     for (size_t i = 0; i < scr->row; i++) {
         for (size_t j = 0; j < scr->col; j++) {

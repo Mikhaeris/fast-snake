@@ -14,14 +14,9 @@ int main()
     screen old_scr;
     ncurses_init(&scr);
 
-    point p = {
-        .x = scr.col/2,
-        .y = scr.row/2
-    };
-    snake *s = snake_init(&scr, &p);
+    snake *s = snake_init(&scr);
     set_direction(s, 0, 0);
 
-    int flag_grow_up = 0;
     int key;
     while ((key = getch()) != key_escape) {
         switch (key) {
@@ -38,11 +33,10 @@ int main()
             set_direction(s, 1, 0);
             break;
         case ' ':
-            flag_grow_up = 1;
+            snake_grow_up(s);
             break;
         case ERR:
-            snake_move(s, &scr, flag_grow_up);
-            flag_grow_up = 0;
+            snake_move(s, &scr);
             break;
         case KEY_RESIZE:
             old_scr = scr;

@@ -18,6 +18,6 @@ void print_cell(point *p, char);
 
 void clear_cell(point *p);
 
-void game_over(screen *scr);
+void game_over(const screen *scr);
 
 #endif /* UI_H_SENTRY */
