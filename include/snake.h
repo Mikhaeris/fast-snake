@@ -25,8 +25,6 @@ typedef struct snake {
 
 snake *snake_init(screen *scr);
 
-void snake_update(snake *s, screen *old_scr, screen *new_scr);
-
 void snake_grow_up(snake *s);
 
 void snake_move(snake *s, const screen *scr);

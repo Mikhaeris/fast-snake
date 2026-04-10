@@ -40,9 +40,7 @@ int main()
             snake_move(s, &scr);
             break;
         case KEY_RESIZE:
-            old_scr = scr;
-            handle_resize(&scr);
-            snake_update(s, &old_scr, &scr);
+            print_msg_exit(&scr, "Oops!");
             break;
         }
 

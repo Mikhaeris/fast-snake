@@ -12,12 +12,10 @@ void ncurses_init(screen *scr);
 
 void ncurses_free();
 
-void handle_resize(screen *scr);
-
 void print_cell(point *p, char);
 
 void clear_cell(point *p);
 
-void game_over(const screen *scr);
+void print_msg_exit(const screen *scr, const char *msg);
 
 #endif /* UI_H_SENTRY */
