@@ -2,14 +2,13 @@
 
 #include "../include/ui.h"
 #include "../include/error.h"
-#include "../include/apple.h"
 
 #include <curses.h>
 
 #include <stdlib.h>
 #include <string.h>
 
-snake *snake_init(screen *scr)
+snake *snake_init(const screen *scr)
 {
     snake *s = malloc(sizeof(*s));
     if (s == NULL) {
@@ -65,7 +64,7 @@ static inline void check(int *coord, int max)
     }
 }
 
-void snake_move(snake *s, const screen *scr)
+void snake_move(snake *s, apple *a, const screen *scr)
 {
     /* set head cell from @ to # */
     print_cell(&s->circle_buf[s->head], SNAKE_SYMBOL);
@@ -74,6 +73,7 @@ void snake_move(snake *s, const screen *scr)
     if (s->grow_up == 0) {
         clear_cell(&s->circle_buf[s->tail]);
         snake_set_collision(s, scr, s->tail, 0);
+        apple_update_cells(a, &s->circle_buf[s->tail], scr, 0);
         s->tail = (s->tail + 1) % s->circle_buf_size;
     } else {
         s->grow_up = 0;
@@ -88,6 +88,7 @@ void snake_move(snake *s, const screen *scr)
 
     s->head = (s->head + 1) % s->circle_buf_size;
     s->circle_buf[s->head] = new_p;
+    apple_update_cells(a, &s->circle_buf[s->head], scr, 1);
 
     if (snake_check_collision(s, scr)) {
         print_msg_exit(scr, "Game over!");
@@ -107,4 +108,10 @@ inline void set_direction(snake *s, int ndx, int ndy)
     }
     s->dx = ndx;
     s->dy = ndy;
+}
+
+uint8_t check_apple_collision(apple *a, snake *s)
+{
+    const point *head = &s->circle_buf[s->head];
+    return (a->apple_p.x == head->x) && (a->apple_p.y == head->y);
 }

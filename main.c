@@ -13,13 +13,12 @@ int main()
     srand(time(NULL));
 
     screen scr;
-    screen old_scr;
     ncurses_init(&scr);
 
     snake *s = snake_init(&scr);
     set_direction(s, 0, 0);
 
-    apple *a = apple_init(s, &scr);
+    apple *a = apple_init(&scr);
 
     int key;
     while ((key = getch()) != key_escape) {
@@ -37,7 +36,7 @@ int main()
             set_direction(s, 1, 0);
             break;
         case ERR:
-            snake_move(s, &scr);
+            snake_move(s, a, &scr);
             break;
         case KEY_RESIZE:
             print_msg_exit(&scr, "Oops!");
@@ -46,7 +45,7 @@ int main()
 
         if (check_apple_collision(a, s)) {
             snake_grow_up(s);
-            apple_generate(a, s);
+            apple_generate(a);
         }
     }
 

@@ -6,6 +6,7 @@
 
 #include "./ui.h"
 #include "./point.h"
+#include "./apple.h"
 
 #define SNAKE_SYMBOL '#'
 #define SNAKE_HEAD_SYMBOL '@'
@@ -23,12 +24,14 @@ typedef struct snake {
     uint8_t *collision_mask;
 } snake;
 
-snake *snake_init(screen *scr);
+snake *snake_init(const screen *scr);
 
 void snake_grow_up(snake *s);
 
-void snake_move(snake *s, const screen *scr);
+void snake_move(snake *s, apple *a, const screen *scr);
 
 void set_direction(snake *s, int dx, int dy);
+
+uint8_t check_apple_collision(apple *a, snake *s);
 
 #endif /* SNAKE_H_SENTRY */

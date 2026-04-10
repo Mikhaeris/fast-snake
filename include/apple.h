@@ -1,8 +1,10 @@
 #ifndef APPLE_H_SENTRY
 #define APPLE_H_SENTRY
 
-#include "./snake.h"
+#include "./point.h"
+#include "./ui.h"
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef struct apple {
@@ -12,12 +14,10 @@ typedef struct apple {
     size_t *pos;
 } apple;
 
-void apple_generate(apple *a, snake *s);
+void apple_generate(apple *a);
 
-void apple_update_cells(apple *a, point *p, screen *scr, uint8_t flag);
+void apple_update_cells(apple *a, const point *p, const screen *scr, uint8_t flag);
 
-apple *apple_init(snake *s, screen *scr);
-
-uint8_t check_apple_collision(apple *a, snake *s);
+apple *apple_init(screen *scr);
 
 #endif /* APPLE_H_SENTRY */
