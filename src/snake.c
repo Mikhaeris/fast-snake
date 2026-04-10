@@ -98,8 +98,11 @@ void snake_move(snake *s, const screen *scr)
     refresh();
 }
 
-inline void set_direction(snake *s, int dx, int dy)
+inline void set_direction(snake *s, int ndx, int ndy)
 {
-    s->dx = dx;
-    s->dy = dy;
+    if ((s->dx == -ndx || s->dy == -ndy) && (s->head != s->tail)) {
+        return;
+    }
+    s->dx = ndx;
+    s->dy = ndy;
 }
