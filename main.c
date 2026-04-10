@@ -46,7 +46,7 @@ int main()
 
         if (check_apple_collision(a, s)) {
             snake_grow_up(s);
-            apple_generate(a, s, &scr);
+            apple_generate(a, s);
         }
     }
 

@@ -7,9 +7,14 @@
 
 typedef struct apple {
     point apple_p;
+    point *cells;
+    size_t k;
+    size_t *pos;
 } apple;
 
-void apple_generate(apple *a, snake *s, screen *scr);
+void apple_generate(apple *a, snake *s);
+
+void apple_update_cells(apple *a, point *p, screen *scr, uint8_t flag);
 
 apple *apple_init(snake *s, screen *scr);
 

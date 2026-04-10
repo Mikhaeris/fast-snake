@@ -1,6 +1,8 @@
 #include "../include/snake.h"
+
 #include "../include/ui.h"
 #include "../include/error.h"
+#include "../include/apple.h"
 
 #include <curses.h>
 
