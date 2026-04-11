@@ -30,5 +30,9 @@ make release
 ./build/release/main
 ```
 
+### Keybindings
+- arrow keys for movement
+- esc for exit
+
 ### How it works
 ...
