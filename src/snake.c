@@ -38,6 +38,13 @@ snake *snake_init(const screen *scr)
     return s;
 }
 
+void snake_free(snake *s)
+{
+    free(s->circle_buf);
+    free(s->collision_mask);
+    free(s);
+}
+
 void snake_grow_up(snake *s)
 {
     s->grow_up = 1;

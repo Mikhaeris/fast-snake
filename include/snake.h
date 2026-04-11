@@ -27,6 +27,8 @@ typedef struct snake {
 
 snake *snake_init(const screen *scr);
 
+void snake_free(snake *s);
+
 void snake_grow_up(snake *s);
 
 game_status snake_move(snake *s, apple *a, const screen *scr);

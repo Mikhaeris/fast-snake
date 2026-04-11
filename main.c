@@ -62,6 +62,9 @@ int main()
         }
     }
 
+    snake_free(s);
+    apple_free(a);
     ncurses_free();
+
     return 0;
 }
