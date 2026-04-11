@@ -61,9 +61,9 @@ static inline void snake_set_collision(snake *s, const screen *scr, size_t pos, 
 static inline void check(int *coord, int max)
 {
     if (*coord < 0) {
-        *coord += max;
-    } else if (*coord > max) {
-        *coord -= max;
+        *coord = max - 1;
+    } else if (*coord >= max) {
+        *coord = 0;
     }
 }
 
@@ -85,9 +85,9 @@ void snake_move(snake *s, apple *a, const screen *scr)
     /* move head */
     point new_p = s->circle_buf[s->head];
     new_p.x += s->dx;
-    check(&new_p.x, scr->col-1);
+    check(&new_p.x, scr->col);
     new_p.y += s->dy;
-    check(&new_p.y, scr->row-1);
+    check(&new_p.y, scr->row);
 
     s->head = (s->head + 1) % s->circle_buf_size;
     s->circle_buf[s->head] = new_p;
