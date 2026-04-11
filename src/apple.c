@@ -6,31 +6,40 @@
 
 void apple_generate(apple *a)
 {
-    const point *p = &a->cells[1 + rand() % (a->k-1)];
+    if (a->k == 0) {
+        return;
+    }
+    const point *p = &a->cells[rand() % a->k];
     a->apple_p = *p;
     print_cell(&a->apple_p, '*');
 }
 
 void apple_update_cells(apple *a, const point *p, const screen *scr, uint8_t flag)
 {
-    /* get 1D pos from 2D */
-    int idx = p->x * scr->row + p->y;
-
-    /* swap el in cells */
-    point tmp_p = a->cells[a->pos[idx]];
-    a->cells[a->pos[idx]] = a->cells[a->k];
-    a->cells[a->k] = tmp_p;
+    /* 2D to 1D */
+    int idx = p->y * scr->col + p->x;
 
     if (flag) {
-        a->k -= 1;
-    } else {
-        a->k += 1;
-    }
+        if (a->k == 0) return;
 
-    /* update pos */
-    size_t tmp_idx = a->pos[idx];
-    a->pos[idx] = a->pos[a->k];
-    a->pos[a->k] = tmp_idx;
+        size_t cur_pos = a->pos[idx];
+        size_t last    = a->k - 1;
+
+        point last_p = a->cells[last];
+        int last_idx = last_p.y * scr->col + last_p.x;
+
+        a->cells[cur_pos] = last_p;
+        a->cells[last]    = *p;
+
+        a->pos[last_idx] = cur_pos;
+        a->pos[idx]      = last;
+
+        a->k--;
+    } else {
+        a->cells[a->k] = *p;
+        a->pos[idx]    = a->k;
+        a->k++;
+    }
 }
 
 apple *apple_init(screen *scr)
@@ -49,9 +58,9 @@ apple *apple_init(screen *scr)
 
     for (int i = 0; i < scr->row; i++) {
         for (int j = 0; j < scr->col; j++) {
-            point *p = &a->cells[i * scr->row + j];
-            p->x = i;
-            p->y = j;
+            point *p = &a->cells[i * scr->col + j];
+            p->x = j;
+            p->y = i;
         }
     }
 
@@ -61,16 +70,16 @@ apple *apple_init(screen *scr)
     }
     for (int i = 0; i < scr->row; i++) {
         for (int j = 0; j < scr->col; j++) {
-            a->pos[i * scr->row + j] = i * scr->row + j;
+            a->pos[i * scr->col + j] = i * scr->col + j;
         }
     }
 
     point p = {
-        .x = scr->col/2,
-        .y = scr->row/2
+        .x = scr->col / 2,
+        .y = scr->row / 2
     };
     apple_update_cells(a, &p, scr, 1);
-
     apple_generate(a);
+
     return a;
 }

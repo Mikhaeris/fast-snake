@@ -37,16 +37,16 @@ int main()
             break;
         case ERR:
             snake_move(s, a, &scr);
+            if (check_apple_collision(a, s)) {
+                snake_grow_up(s);
+                apple_generate(a);
+            }
             break;
         case KEY_RESIZE:
             print_msg_exit(&scr, "Oops!");
             break;
         }
 
-        if (check_apple_collision(a, s)) {
-            snake_grow_up(s);
-            apple_generate(a);
-        }
     }
 
     ncurses_free();

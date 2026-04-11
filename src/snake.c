@@ -16,8 +16,11 @@ snake *snake_init(const screen *scr)
     }
 
     s->grow_up = 0;
-    s->head = 0;
-    s->tail = 0;
+    s->dx      = 0;
+    s->dy      = 0;
+    s->head    = 0;
+    s->tail    = 0;
+
     s->circle_buf_size = scr->row * scr->col;
     s->circle_buf = malloc(sizeof(*s->circle_buf) * s->circle_buf_size);
     if (s->circle_buf == NULL) {
@@ -36,7 +39,7 @@ snake *snake_init(const screen *scr)
     return s;
 }
 
-inline void snake_grow_up(snake *s)
+void snake_grow_up(snake *s)
 {
     s->grow_up = 1;
 }
@@ -101,9 +104,11 @@ void snake_move(snake *s, apple *a, const screen *scr)
     refresh();
 }
 
-inline void set_direction(snake *s, int ndx, int ndy)
+void set_direction(snake *s, int ndx, int ndy)
 {
-    if ((s->dx == -ndx || s->dy == -ndy) && (s->head != s->tail)) {
+    if ((ndx != 0 || ndy != 0) &&
+        s->dx == -ndx && s->dy == -ndy &&
+        s->head != s->tail) {
         return;
     }
     s->dx = ndx;
