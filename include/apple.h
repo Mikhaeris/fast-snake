@@ -7,6 +7,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define APPLE_SYMBOL '*'
+
 typedef struct apple {
     point apple_p;
     point *cells;

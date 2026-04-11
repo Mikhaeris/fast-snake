@@ -11,7 +11,7 @@ void apple_generate(apple *a)
     }
     const point *p = &a->cells[rand() % a->k];
     a->apple_p = *p;
-    print_cell(&a->apple_p, '*');
+    print_cell(&a->apple_p, APPLE_SYMBOL);
 }
 
 void apple_update_cells(apple *a, const point *p, const screen *scr, uint8_t flag)
