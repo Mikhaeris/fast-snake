@@ -84,3 +84,10 @@ apple *apple_init(screen *scr)
 
     return a;
 }
+
+void apple_free(apple *a)
+{
+    free(a->cells);
+    free(a->pos);
+    free(a);
+}
