@@ -16,6 +16,6 @@ void print_cell(const point *p, char);
 
 void clear_cell(const point *p);
 
-void print_msg_exit(const screen *scr, const char *msg);
+void print_msg(const screen *scr, const char *msg);
 
 #endif /* UI_H_SENTRY */

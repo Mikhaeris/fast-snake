@@ -4,14 +4,15 @@
 
 #include <stdlib.h>
 
-void apple_generate(apple *a)
+game_status apple_generate(apple *a)
 {
     if (a->k == 0) {
-        return;
+        return game_win;
     }
     const point *p = &a->cells[rand() % a->k];
     a->apple_p = *p;
     print_cell(&a->apple_p, APPLE_SYMBOL);
+    return game_continue;
 }
 
 void apple_update_cells(apple *a, const point *p, const screen *scr, uint8_t flag)

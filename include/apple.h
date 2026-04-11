@@ -1,6 +1,7 @@
 #ifndef APPLE_H_SENTRY
 #define APPLE_H_SENTRY
 
+#include "./game_status.h"
 #include "./point.h"
 #include "./ui.h"
 
@@ -16,7 +17,7 @@ typedef struct apple {
     size_t *pos;
 } apple;
 
-void apple_generate(apple *a);
+game_status apple_generate(apple *a);
 
 void apple_update_cells(apple *a, const point *p, const screen *scr, uint8_t flag);
 

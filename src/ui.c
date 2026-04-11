@@ -4,7 +4,6 @@
 
 #include <curses.h>
 
-#include <stdlib.h>
 #include <string.h>
 
 void ncurses_init(screen *scr)
@@ -36,7 +35,7 @@ void clear_cell(const point *p)
     addch(' ');
 }
 
-void print_msg_exit(const screen *scr, const char *msg)
+void print_msg(const screen *scr, const char *msg)
 {
     for (int i = 0; i < scr->row; i++) {
         for (int j = 0; j < scr->col; j++) {
@@ -52,6 +51,4 @@ void print_msg_exit(const screen *scr, const char *msg)
     int key;
     while ((key = getch()) != key_escape)
         {}
-    ncurses_free();
-    exit(0);
 }
