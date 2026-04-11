@@ -23,4 +23,6 @@ void apple_update_cells(apple *a, const point *p, const screen *scr, uint8_t fla
 
 apple *apple_init(screen *scr);
 
+void apple_free();
+
 #endif /* APPLE_H_SENTRY */
