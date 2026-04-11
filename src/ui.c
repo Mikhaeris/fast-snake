@@ -4,10 +4,15 @@
 
 #include <curses.h>
 
+#include <stdlib.h>
 #include <string.h>
 
-void ncurses_init(screen *scr)
+screen *ncurses_init()
 {
+    screen *scr = malloc(sizeof(*scr));
+    scr->row = 0;
+    scr->col = 0;
+
     initscr();
     cbreak();
     timeout(delay_duration);
@@ -16,6 +21,7 @@ void ncurses_init(screen *scr)
     curs_set(0);
 
     getmaxyx(stdscr, scr->row, scr->col);
+    return scr;
 }
 
 void ncurses_free()

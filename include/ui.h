@@ -8,7 +8,7 @@ typedef struct screen {
     int col;
 } screen;
 
-void ncurses_init(screen *scr);
+screen *ncurses_init();
 
 void ncurses_free();
 

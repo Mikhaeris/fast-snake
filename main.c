@@ -13,13 +13,12 @@ int main()
 {
     srand(time(NULL));
 
-    screen scr;
-    ncurses_init(&scr);
+    screen *scr = ncurses_init();
 
-    snake *s = snake_init(&scr);
+    snake *s = snake_init(scr);
     set_direction(s, 0, 0);
 
-    apple *a = apple_init(&scr);
+    apple *a = apple_init(scr);
 
     game_status gs;
     int key;
@@ -38,7 +37,7 @@ int main()
             set_direction(s, 1, 0);
             break;
         case KEY_RESIZE:
-            print_msg(&scr, "Oops!");
+            print_msg(scr, "Oops!");
             break;
         }
 
@@ -46,9 +45,9 @@ int main()
             flushinp();
         }
 
-        gs = snake_move(s, a, &scr);
+        gs = snake_move(s, a, scr);
         if (gs == game_over) {
-            print_msg(&scr, "Game over!");
+            print_msg(scr, "Game over!");
             break;
         }
 
@@ -56,7 +55,7 @@ int main()
             snake_grow_up(s);
             gs = apple_generate(a);
             if (gs == game_win) {
-                print_msg(&scr, "You win!");
+                print_msg(scr, "You win!");
                 break;
             }
         }
