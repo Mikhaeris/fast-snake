@@ -1,5 +1,5 @@
 #include "../include/snake.h"
-#include "../include/ui.h"
+
 #include "../include/error.h"
 
 #include <curses.h>
@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-snake *snake_init(screen *scr)
+snake *snake_init(const screen *scr)
 {
     snake *s = malloc(sizeof(*s));
     if (s == NULL) {
@@ -15,8 +15,11 @@ snake *snake_init(screen *scr)
     }
 
     s->grow_up = 0;
-    s->head = 0;
-    s->tail = 0;
+    s->dx      = 0;
+    s->dy      = 0;
+    s->head    = 0;
+    s->tail    = 0;
+
     s->circle_buf_size = scr->row * scr->col;
     s->circle_buf = malloc(sizeof(*s->circle_buf) * s->circle_buf_size);
     if (s->circle_buf == NULL) {
@@ -35,7 +38,14 @@ snake *snake_init(screen *scr)
     return s;
 }
 
-inline void snake_grow_up(snake *s)
+void snake_free(snake *s)
+{
+    free(s->circle_buf);
+    free(s->collision_mask);
+    free(s);
+}
+
+void snake_grow_up(snake *s)
 {
     s->grow_up = 1;
 }
@@ -57,13 +67,13 @@ static inline void snake_set_collision(snake *s, const screen *scr, size_t pos, 
 static inline void check(int *coord, int max)
 {
     if (*coord < 0) {
-        *coord += max;
-    } else if (*coord > max) {
-        *coord -= max;
+        *coord = max - 1;
+    } else if (*coord >= max) {
+        *coord = 0;
     }
 }
 
-void snake_move(snake *s, const screen *scr)
+game_status snake_move(snake *s, apple *a, const screen *scr)
 {
     /* set head cell from @ to # */
     print_cell(&s->circle_buf[s->head], SNAKE_SYMBOL);
@@ -72,6 +82,7 @@ void snake_move(snake *s, const screen *scr)
     if (s->grow_up == 0) {
         clear_cell(&s->circle_buf[s->tail]);
         snake_set_collision(s, scr, s->tail, 0);
+        apple_update_cells(a, &s->circle_buf[s->tail], scr, 0);
         s->tail = (s->tail + 1) % s->circle_buf_size;
     } else {
         s->grow_up = 0;
@@ -80,15 +91,16 @@ void snake_move(snake *s, const screen *scr)
     /* move head */
     point new_p = s->circle_buf[s->head];
     new_p.x += s->dx;
-    check(&new_p.x, scr->col-1);
+    check(&new_p.x, scr->col);
     new_p.y += s->dy;
-    check(&new_p.y, scr->row-1);
+    check(&new_p.y, scr->row);
 
     s->head = (s->head + 1) % s->circle_buf_size;
     s->circle_buf[s->head] = new_p;
+    apple_update_cells(a, &s->circle_buf[s->head], scr, 1);
 
     if (snake_check_collision(s, scr)) {
-        print_msg_exit(scr, "Game over!");
+        return game_over;
     }
 
     snake_set_collision(s, scr, s->head, 1);
@@ -96,10 +108,22 @@ void snake_move(snake *s, const screen *scr)
     print_cell(&s->circle_buf[s->head], SNAKE_HEAD_SYMBOL);
 
     refresh();
+    return game_continue;
 }
 
-inline void set_direction(snake *s, int dx, int dy)
+void set_direction(snake *s, int ndx, int ndy)
 {
-    s->dx = dx;
-    s->dy = dy;
+    if ((ndx != 0 || ndy != 0) &&
+        s->dx == -ndx && s->dy == -ndy &&
+        s->head != s->tail) {
+        return;
+    }
+    s->dx = ndx;
+    s->dy = ndy;
+}
+
+uint8_t check_apple_collision(apple *a, snake *s)
+{
+    const point *head = &s->circle_buf[s->head];
+    return (a->apple_p.x == head->x) && (a->apple_p.y == head->y);
 }

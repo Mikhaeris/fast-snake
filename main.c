@@ -1,4 +1,5 @@
 #include "./include/constants.h"
+#include "./include/game_status.h"
 #include "./include/ui.h"
 #include "./include/snake.h"
 #include "./include/apple.h"
@@ -12,15 +13,14 @@ int main()
 {
     srand(time(NULL));
 
-    screen scr;
-    screen old_scr;
-    ncurses_init(&scr);
+    screen *scr = ncurses_init();
 
-    snake *s = snake_init(&scr);
+    snake *s = snake_init(scr);
     set_direction(s, 0, 0);
 
-    apple *a = apple_init(s, &scr);
+    apple *a = apple_init(scr);
 
+    game_status gs;
     int key;
     while ((key = getch()) != key_escape) {
         switch (key) {
@@ -36,20 +36,34 @@ int main()
         case KEY_RIGHT:
             set_direction(s, 1, 0);
             break;
-        case ERR:
-            snake_move(s, &scr);
-            break;
         case KEY_RESIZE:
-            print_msg_exit(&scr, "Oops!");
+            print_msg(scr, "Oops!");
+            break;
+        }
+
+        if (key != ERR) {
+            flushinp();
+        }
+
+        gs = snake_move(s, a, scr);
+        if (gs == game_over) {
+            print_msg(scr, "Game over!");
             break;
         }
 
         if (check_apple_collision(a, s)) {
             snake_grow_up(s);
-            apple_generate(a, s, &scr);
+            gs = apple_generate(a);
+            if (gs == game_win) {
+                print_msg(scr, "You win!");
+                break;
+            }
         }
     }
 
+    snake_free(s);
+    apple_free(a);
     ncurses_free();
+
     return 0;
 }

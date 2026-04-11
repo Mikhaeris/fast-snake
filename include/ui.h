@@ -8,14 +8,14 @@ typedef struct screen {
     int col;
 } screen;
 
-void ncurses_init(screen *scr);
+screen *ncurses_init();
 
 void ncurses_free();
 
-void print_cell(point *p, char);
+void print_cell(const point *p, char);
 
-void clear_cell(point *p);
+void clear_cell(const point *p);
 
-void print_msg_exit(const screen *scr, const char *msg);
+void print_msg(const screen *scr, const char *msg);
 
 #endif /* UI_H_SENTRY */
